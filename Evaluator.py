@@ -33,10 +33,7 @@ class Evaluator:
             # Read image via image path
             line = annotation_line.split()
             cv2_img = cv2.imread(line[0])
-            image_shape = {
-                'width': cv2_img.shape[1],
-                'height': cv2_img.shape[0]
-            }
+            image_shape = cv2_img.shape
             pil_image = cv2.cvtColor(cv2_img, cv2.COLOR_BGR2RGB)
             color_image = PIL_Image.fromarray(pil_image)
 
