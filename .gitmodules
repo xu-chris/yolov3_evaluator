@@ -1,0 +1,3 @@
+[submodule "detector"]
+	path = detector
+	url = https://github.com/creichel/yolov3_detector
