@@ -30,7 +30,7 @@ class BoundingBox:
 
     @classmethod
     def from_detection(cls, box_as_list, bb_class, score, image_shape) -> 'BoundingBox':
-        return cls(min_x=box_as_list[0], min_y=box_as_list[1], max_x=box_as_list[2], max_y=box_as_list[3], bb_class=bb_class, image_shape=image_shape, score=score)
+        return cls(min_x=box_as_list[1], min_y=box_as_list[0], max_x=box_as_list[3], max_y=box_as_list[2], bb_class=bb_class, image_shape=image_shape, score=score)
 
     def calculate_rel_positions(self):
         self.rel_minX = self.minX / self.image_shape[1]
