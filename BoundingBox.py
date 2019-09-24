@@ -19,10 +19,13 @@ class BoundingBox:
         self.rel_height = None
         self.center = None
         self.rel_center = None
+        self.area = None
+        self.rel_area = None
 
         self.calculate_rel_positions()
         self.calculate_sizes()
         self.calculate_center()
+        self.calculate_area()
 
     @classmethod
     def from_list(cls, box_as_list, image_shape) -> 'BoundingBox':
@@ -56,3 +59,28 @@ class BoundingBox:
             self.center[0] / self.image_shape[1],
             self.center[1] / self.image_shape[0]
         ]
+
+    def calculate_area(self):
+        self.area = self.width * self.height
+        self.rel_area = self.rel_width * self.rel_height
+
+    def get_intersection_with(self, bounding_box, epsilon=1e-5):
+
+        assert self.image_shape == bounding_box.image_shape, "Cannot calculate intersection of two bounding boxes from different image shapes"
+
+        min_x = max(self.minX, bounding_box.minX)
+        max_x = min(self.maxX, bounding_box.maxX)
+        min_y = max(self.minY, bounding_box.minY)
+        max_y = min(self.maxY, bounding_box.maxY)
+
+        overlap_box = BoundingBox(min_x, min_y, max_x, max_y, 0, image_shape=self.image_shape)
+
+        if overlap_box.width <= 0 or overlap_box.height <= 0:
+            return 0.0
+
+        overlap_area = overlap_box.area
+        combined_area = self.area + bounding_box.area - overlap_area
+
+        intersection_over_union = overlap_area / (combined_area + epsilon)
+
+        return intersection_over_union

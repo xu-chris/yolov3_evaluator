@@ -4,7 +4,7 @@ from BoundingBox import BoundingBox
 
 class TestBoundingBox(unittest.TestCase):
 
-    def test_creation_from_values(self):
+    def test_bb_creation_from_values(self):
         """
         Tests the creation of a bounding box by it's values
         """
@@ -56,7 +56,7 @@ class TestBoundingBox(unittest.TestCase):
         self.assertEqual(bounding_box.center, center)
         self.assertEqual(bounding_box.rel_center, rel_center)
 
-    def test_creation_from_list(self):
+    def test_bb_creation_from_list(self):
         bb_list = [390, 1, 444, 456, 1]
         image_shape = [1080, 1920, 3]
         width = 54
@@ -76,7 +76,7 @@ class TestBoundingBox(unittest.TestCase):
         self.assertEqual(bounding_box.height, height)
         self.assertEqual(bounding_box.center, center)
 
-    def test_creation_from_detection(self):
+    def test_bb_creation_from_detection(self):
         bb_list = [143.18617, 579.51013, 355.62076, 607.54224]
         bb_class = 1
         score = 0.9335858225822449
@@ -98,6 +98,81 @@ class TestBoundingBox(unittest.TestCase):
         self.assertEqual(width, bounding_box.width)
         self.assertEqual(height, bounding_box.height)
         self.assertEqual(center, bounding_box.center)
+
+    def test_perfect_overlap(self):
+        min_x = 0
+        min_y = 0
+        max_x = 100
+        max_y = 50
+        image_shape = [100, 100, 3]  # height, width, dimensions
+        bb_class = 0
+        score = 0.75
+
+        bounding_box_1 = BoundingBox(
+            min_x=min_x,
+            min_y=min_y,
+            max_x=max_x,
+            max_y=max_y,
+            bb_class=bb_class,
+            image_shape=image_shape,
+            score=score
+        )
+
+        bounding_box_2 = BoundingBox(
+            min_x=min_x,
+            min_y=min_y,
+            max_x=max_x,
+            max_y=max_y,
+            bb_class=bb_class,
+            image_shape=image_shape,
+            score=score
+        )
+
+        self.assertTrue(0.9999 <= bounding_box_1.get_intersection_with(bounding_box_2) <= 1)
+
+    def test_no_overlap(self):
+
+        bounding_box_1 = BoundingBox(
+            min_x=0,
+            min_y=0,
+            max_x=50,
+            max_y=50,
+            bb_class=0,
+            image_shape=[100, 100, 3]
+        )
+
+        bounding_box_2 = BoundingBox(
+            min_x=50,
+            min_y=50,
+            max_x=100,
+            max_y=100,
+            bb_class=0,
+            image_shape=[100, 100, 3]
+        )
+
+        self.assertEqual(0, bounding_box_1.get_intersection_with(bounding_box_2))
+
+    def test_half_overlap(self):
+
+        bounding_box_1 = BoundingBox(
+            min_x=0,
+            min_y=0,
+            max_x=100,
+            max_y=100,
+            bb_class=0,
+            image_shape=[100, 100, 3]
+        )
+
+        bounding_box_2 = BoundingBox(
+            min_x=50,
+            min_y=0,
+            max_x=100,
+            max_y=100,
+            bb_class=0,
+            image_shape=[100, 100, 3]
+        )
+
+        self.assertTrue(0.4999 <= bounding_box_1.get_intersection_with(bounding_box_2) <= 0.5)
 
 
 if __name__ == '__main__':
