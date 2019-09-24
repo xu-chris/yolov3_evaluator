@@ -69,7 +69,7 @@ class Evaluator:
                 if best_box is None:
                     result.append({
                         'class': out_class,
-                        'error_type': ErrorType.BACKGROUND
+                        'error_type': ErrorType.NOT_GIVEN
                     })
 
                     continue
