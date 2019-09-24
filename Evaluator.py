@@ -1,9 +1,11 @@
-from yolo import YOLO
+from detector.yolo import YOLO
 from PIL import Image as PIL_Image
 import cv2
 import os
 from BoundingBox import BoundingBox
 from ErrorType import ErrorType
+from datetime import datetime
+import numpy as np
 
 
 class Evaluator:
@@ -16,7 +18,7 @@ class Evaluator:
     def run_tests(self):
 
         # Read likes from test file
-        with open(self.test_set_annotation_path) as f:
+        with open(self.test_data_annotation_file) as f:
             lines = f.readlines()
 
         # Make result folder
@@ -28,10 +30,10 @@ class Evaluator:
         result = []
 
         # For each line
-        yolo = YOLO(**args)
+        yolo = YOLO(**self.args)
         for line in lines:
             # Read image via image path
-            line = annotation_line.split()
+            line = line.split()
             cv2_img = cv2.imread(line[0])
             image_shape = cv2_img.shape
             pil_image = cv2.cvtColor(cv2_img, cv2.COLOR_BGR2RGB)
@@ -39,6 +41,7 @@ class Evaluator:
 
             # Read box details
             boxes = np.array([np.array(list(map(int, box.split(',')))) for box in line[1:]])
+            print(boxes)
 
             # Run detection
             r_image, out_boxes, out_scores, out_classes = yolo.detect_image(color_image)
@@ -74,6 +77,9 @@ class Evaluator:
                 # Is correctly classified?
                 correct_classified = None
 
+                # Average precision
+                average_precision = -1
+
                 # BB to image size ratio
                 bb_to_image_size_ratio = -1
 
@@ -101,9 +107,10 @@ class Evaluator:
                 })
 
             # If still boxes are given, this means theses weren't classified at all. Count them as NOT_DETECTED errors
-            for i in range(len(boxes)):
+            for box in boxes:
+                box = BoundingBox.from_list(box, image_shape=image_shape)
                 result.append({
-                    'class': gt_class,
+                    'class': box.bb_class,
                     'error_type': ErrorType.NOT_DETECTED
                 })
 
