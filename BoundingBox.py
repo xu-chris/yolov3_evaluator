@@ -48,8 +48,8 @@ class BoundingBox:
 
     def calculate_center(self):
         self.center = [
-            self.minX + (self.maxX / 2),
-            self.minY + (self.maxY / 2)
+            self.minX + (self.width / 2),
+            self.minY + (self.height / 2)
         ]
 
         self.rel_center = [
