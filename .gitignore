@@ -1,5 +1,9 @@
 # GIT REPO SPECIFIC
+model/*
+!model/.gitkeep
 
+test_data/*
+!test_data/.gitkeep
 
 # GITHUB STANDARD GITIGNORE
 # Byte-compiled / optimized / DLL files
