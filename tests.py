@@ -56,7 +56,7 @@ class TestBoundingBox(unittest.TestCase):
         self.assertEqual(bounding_box.center, center)
         self.assertEqual(bounding_box.rel_center, rel_center)
 
-    def test_class_creation_from_list(self):
+    def test_creation_from_list(self):
         bb_list = [390, 1, 444, 456, 1]
         image_shape = [1080, 1920, 3]
         width = 54
@@ -75,6 +75,29 @@ class TestBoundingBox(unittest.TestCase):
         self.assertEqual(bounding_box.width, width)
         self.assertEqual(bounding_box.height, height)
         self.assertEqual(bounding_box.center, center)
+
+    def test_creation_from_detection(self):
+        bb_list = [143.18617, 579.51013, 355.62076, 607.54224]
+        bb_class = 1
+        score = 0.9335858225822449
+        image_shape = [1080, 1920, 3]
+
+        width = 28.03210999999999
+        height = 212.43459000000001
+        center = [593.5261849999999, 249.403465]
+
+        bounding_box = BoundingBox.from_detection(bb_list, bb_class, score, image_shape=image_shape)
+
+        # Check for correct setting of variables
+        self.assertEqual(bounding_box.minX, bb_list[1])
+        self.assertEqual(bounding_box.minY, bb_list[0])
+        self.assertEqual(bounding_box.maxX, bb_list[3])
+        self.assertEqual(bounding_box.maxY, bb_list[2])
+        self.assertEqual(bounding_box.bb_class, bb_class)
+        # Check for calculated values
+        self.assertEqual(width, bounding_box.width)
+        self.assertEqual(height, bounding_box.height)
+        self.assertEqual(center, bounding_box.center)
 
 
 if __name__ == '__main__':
