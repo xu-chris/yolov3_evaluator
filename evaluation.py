@@ -11,5 +11,6 @@ args = {
 }
 
 if __name__ == '__main__':
-    evaluator = Evaluator(args, 'test_data', 'test_data/test.txt')
-    evaluator.run_tests()
+    evaluator = Evaluator(args, 'test_data', 'test_data/test.txt', 'test_data/classes.txt')
+    evaluator.run_detection()
+    evaluator.evaluate_results()
